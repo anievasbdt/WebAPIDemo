@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Infraestructura.Persistencia;
+﻿using Aplicacion.Servicios;
+using Dominio.Contracts.Services;
+using Dominio.Contracts.Servicios;
 using Dominio.Entidades;
+using Infraestructura.Persistencia;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infraestructura.Endpoints
@@ -9,32 +12,34 @@ namespace Infraestructura.Endpoints
     [Route("[controller]")]
     public class PolizaHistoryController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly IPolizaHistoryService polizaHistoryService;
 
-        public PolizaHistoryController(AppDbContext context)
+        public PolizaHistoryController(IPolizaHistoryService polizaHistoryService)
         {
-            _context = context;
+            this.polizaHistoryService = polizaHistoryService;
         }
 
 
         [HttpGet("{nBranch}/{nProduct}/{nPolicy}")]
         public async Task<ActionResult<IEnumerable<PolizaHistory>>> GetPoliza_History(int nBranch, int nProduct, int nPolicy)
         {
-            var polizaHistory = await _context.Poliza_History
-                .Include(p => p.Client)
-                .Include(p => p.WayPay)
-                .Include(p => p.NullReason)
-                .Include(p => p.Usuario)
-                .Include(p => p.Branch)
-                .Include(p => p.Product)
-                .Where(p => p.NBranch == nBranch && p.NProduct == nProduct && p.NPolicy == nPolicy)
-                .ToListAsync();
-
-            if (polizaHistory == null || !polizaHistory.Any())
+            try
             {
-                return NotFound();
+                var polizaHistory = await polizaHistoryService.GetPolizaHistory(nBranch,nProduct,nPolicy);
+                if (polizaHistory == null)
+                {
+                    return NotFound();
+                }
+                return Ok(polizaHistory);
             }
-            return polizaHistory;
+            catch (NotImplementedException)
+            {
+                return StatusCode(501, "Method not implemented");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
     }
 }

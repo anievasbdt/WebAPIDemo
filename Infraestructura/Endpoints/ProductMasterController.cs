@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Infraestructura.Persistencia;
+﻿using Aplicacion.Servicios;
+using Dominio.Contracts.Services;
+using Dominio.Contracts.Servicios;
 using Dominio.Entidades;
+using Infraestructura.Persistencia;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -11,18 +14,26 @@ namespace Infraestructura.Endpoints
     [Route("[controller]")]
     public class ProductMasterController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly IProductMasterService productMasterService;
 
-        public ProductMasterController(AppDbContext context)
+        public ProductMasterController(IProductMasterService productMasterService)
         {
-            _context = context;
+            this.productMasterService = productMasterService;
         }
 
         // GET /ProductMaster
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<ProductMaster>>> GetProductMaster()
+        [HttpGet("{nBranch}")]
+        public async Task<ActionResult<IEnumerable<ProductMaster>>> GetProductMasterXBranch(int nBranch)
         {
-            return await _context.ProductMaster.Include(p => p.Branch).Include(p => p.Usuario).ToListAsync();
+            try
+            {
+                var productsMaster = await productMasterService.GetProductMasterXBranch(nBranch);
+                return Ok(productsMaster);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
     }
 }

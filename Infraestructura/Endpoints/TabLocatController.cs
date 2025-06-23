@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Infraestructura.Persistencia;
+﻿using Aplicacion.Servicios;
+using Dominio.Contracts.Services;
+using Dominio.Contracts.Servicios;
 using Dominio.Entidades;
+using Infraestructura.Persistencia;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -11,19 +14,26 @@ namespace Infraestructura.Endpoints
     [Route("[controller]")]
     public class TabLocatController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly ITabLocatService tabLocatService;
 
-        public TabLocatController(AppDbContext context)
+        public TabLocatController(ITabLocatService tabLocatService)
         {
-            _context = context;
+            this.tabLocatService = tabLocatService;
         }
 
         // GET /Tab_Locat
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TabLocat>>> GetTab_Locat()
         {
-            return await _context.Tab_Locat.Include(t => t.Municipality).ThenInclude(m => m.Province).ThenInclude(p => p.Usuario) // Carga la entidad Usuario
-                .Include(t => t.Usuario).ToListAsync();
+            try
+            {
+                var tabLocats = await tabLocatService.GetAll();
+                return Ok(tabLocats);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
     }
 }

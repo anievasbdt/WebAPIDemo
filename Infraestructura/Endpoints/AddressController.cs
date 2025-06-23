@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Infraestructura.Persistencia;
+﻿using Aplicacion.Servicios;
+using Dominio.Contracts.Servicios;
 using Dominio.Entidades;
+using Infraestructura.Persistencia;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infraestructura.Endpoints
@@ -9,31 +11,33 @@ namespace Infraestructura.Endpoints
     [Route("[controller]")]
     public class AddressController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly IAddressService addressService;
 
-        public AddressController(AppDbContext context)
+        public AddressController(IAddressService addressService)
         {
-            _context = context;
+            this.addressService = addressService;
         }
 
         [HttpGet("{nrecowner}/{skeyaddress}/{sinfor}")]
         public async Task<ActionResult<Address>> GetAddress(int nrecowner, int skeyaddress, int sinfor)
         {
-            var address = await _context.Address
-                .Include(a => a.TabLocat)
-                .Include(a => a.Municipality)
-                .Include(a => a.Province)
-                .Include(a => a.Poliza)
-                .Include(a => a.Client)
-                .Include(a => a.Usuario)
-
-                .FirstOrDefaultAsync(a => a.NRecOwner == nrecowner && a.SKeyAddress == skeyaddress && a.SInfor == sinfor);
-
-            if (address == null)
+            try
             {
-                return NotFound();
+                var address = await addressService.GetAddress(nrecowner,skeyaddress,sinfor);
+                if (address == null)
+                {
+                    return NotFound();
+                }
+                return Ok(address);
             }
-            return address;
+            catch (NotImplementedException)
+            {
+                return StatusCode(501, "Method not implemented");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
     }
 }

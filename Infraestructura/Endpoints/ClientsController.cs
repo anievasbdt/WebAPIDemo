@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Infraestructura.Persistencia;
+﻿using Aplicacion.Servicios;
+using Dominio.Contracts.Servicios;
 using Dominio.Entidades;
+using Infraestructura.Persistencia;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -11,33 +13,49 @@ namespace Infraestructura.Endpoints
     [Route("[controller]")]
     public class ClientsController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly IClientService clientService;
 
-        public ClientsController(AppDbContext context)
+        public ClientsController(IClientService clientService)
         {
-            _context = context;
+            this.clientService = clientService;
         }
 
         // GET /clients
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Client>>> GetClients()
         {
-            return await _context.Clients.Include(c => c.Usuario).ToListAsync();
+            try
+            {
+                var clients = await clientService.GetAll();
+                return Ok(clients);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
         // GET /clients/{id}
         [HttpGet("{sclient}")]
         public async Task<ActionResult<Client>> GetClient(string sclient)
         {
-            var client = await _context.Clients
-                .Include(c => c.Usuario) // Eager load the Usuario relationship
-                .FirstOrDefaultAsync(c => c.SClient == sclient); // Replace FindAsync with FirstOrDefaultAsync
-
-            if (client == null)
+            try
             {
-                return NotFound();
+                var client = await clientService.GetClientBySClient(sclient);
+                if (client == null)
+                {
+                    return NotFound();
+                }
+                return Ok(client);
             }
-            return client;
+            catch (NotImplementedException)
+            {
+                return StatusCode(501, "Method not implemented");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
         //// POST /clients

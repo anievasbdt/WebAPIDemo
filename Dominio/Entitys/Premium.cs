@@ -60,7 +60,7 @@ namespace Dominio.Entidades
 
         // Relaciones
         [ForeignKey("NWayPay")]
-        public virtual Way_pay WayPay { get; set; }
+        public virtual WayPay WayPay { get; set; }
 
         [ForeignKey("NStatusPre")]
         public virtual StatusPre StatusPre { get; set; }

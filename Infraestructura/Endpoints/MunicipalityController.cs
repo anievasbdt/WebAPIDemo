@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Infraestructura.Persistencia;
+﻿using Aplicacion.Servicios;
+using Dominio.Contracts.Servicios;
 using Dominio.Entidades;
+using Infraestructura.Persistencia;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -11,20 +13,25 @@ namespace Infraestructura.Endpoints
     [Route("[controller]")]
     public class MunicipalityController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly IMunicipalityService municipalityService;
 
-        public MunicipalityController(AppDbContext context)
+        public MunicipalityController(IMunicipalityService municipalityService)
         {
-            _context = context;
+            this.municipalityService = municipalityService;
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Municipality>>> GetMunicipality()
         {
-            return await _context.Municipality
-                .Include(m => m.Province)
-                .ThenInclude(p => p.Usuario)
-                .ToListAsync();
+            try
+            {
+                var municipalitys = await municipalityService.GetAll();
+                return Ok(municipalitys);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
     }
 }

@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Infraestructura.Persistencia;
+﻿using Aplicacion.Servicios;
+using Dominio.Contracts.Services;
+using Dominio.Contracts.Servicios;
 using Dominio.Entidades;
+using Infraestructura.Persistencia;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -11,18 +14,26 @@ namespace Infraestructura.Endpoints
     [Route("[controller]")]
     public class NacionalityController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly INacionalityService nacionalityService;
 
-        public NacionalityController(AppDbContext context)
+        public NacionalityController(INacionalityService nacionalityService)
         {
-            _context = context;
+            this.nacionalityService = nacionalityService;
         }
 
         // GET /Table5518
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Nacionality>>> GetTable5518()
         {
-            return await _context.Table5518.Include(n => n.Usuario).ToListAsync();
+            try
+            {
+                var nacionalitys = await nacionalityService.GetAll();
+                return Ok(nacionalitys);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
     }
 }

@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Infraestructura.Persistencia;
+﻿using Aplicacion.Servicios;
+using Dominio.Contracts.Servicios;
 using Dominio.Entidades;
+using Infraestructura.Persistencia;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -11,18 +13,26 @@ namespace Infraestructura.Endpoints
     [Route("[controller]")]
     public class NMPolizaController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly INMPolizaService nmpolizaService;
 
-        public NMPolizaController(AppDbContext context)
+        public NMPolizaController(INMPolizaService nmpolizaService)
         {
-            _context = context;
+            this.nmpolizaService = nmpolizaService;
         }
 
         // GET /Table13
         [HttpGet]
         public async Task<ActionResult<IEnumerable<NMPoliza>>> GetTable13()
         {
-            return await _context.Table13.Include(n => n.Usuario).ToListAsync();
+            try
+            {
+                var nmpoliza = await nmpolizaService.GetAll();
+                return Ok(nmpoliza);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
     }
 }

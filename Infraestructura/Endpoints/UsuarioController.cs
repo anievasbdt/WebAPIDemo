@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Infraestructura.Persistencia;
 using Dominio.Entidades;
-using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using Dominio.Contracts.Servicios;
 
 namespace Infraestructura.Endpoints
 {
@@ -11,31 +8,47 @@ namespace Infraestructura.Endpoints
     [Route("[controller]")]
     public class UsuarioController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly IUsuarioService usuarioService;
 
-        public UsuarioController(AppDbContext context)
+        public UsuarioController(IUsuarioService usuarioService)
         {
-            _context = context;
+            this.usuarioService = usuarioService;
         }
 
-        // GET /Usuarios
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Usuario>>> GetUsuarios()
         {
-            return await _context.Usuarios.ToListAsync();
+            try
+            {
+                var usuarios = await usuarioService.GetAll();
+                return Ok(usuarios);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
         [HttpGet("{nusercode}")]
-        public async Task<ActionResult<Usuario>> GetUsuarios(int nusercode)
+        public async Task<ActionResult<Usuario>> GetUsuario(int nusercode)
         {
-            var usuario = await _context.Usuarios
-                .FirstOrDefaultAsync(c => c.NUsercode == nusercode); 
-
-            if (usuario == null)
+            try
             {
-                return NotFound();
+                var usuario = await usuarioService.GetUsuarioByUserCode(nusercode);
+                if (usuario == null)
+                {
+                    return NotFound();
+                }
+                return Ok(usuario);
             }
-            return usuario;
+            catch (NotImplementedException)
+            {
+                return StatusCode(501, "Method not implemented");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
     }
 }

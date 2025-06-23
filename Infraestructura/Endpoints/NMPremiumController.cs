@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Infraestructura.Persistencia;
+﻿using Aplicacion.Servicios;
+using Dominio.Contracts.Services;
+using Dominio.Contracts.Servicios;
 using Dominio.Entidades;
+using Infraestructura.Persistencia;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -11,18 +14,26 @@ namespace Infraestructura.Endpoints
     [Route("[controller]")]
     public class NMPremiumController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly INMPremiumService nMPremiumService;
 
-        public NMPremiumController(AppDbContext context)
+        public NMPremiumController(INMPremiumService nMPremiumService)
         {
-            _context = context;
+            this.nMPremiumService = nMPremiumService;
         }
 
         // GET /Table95
         [HttpGet]
         public async Task<ActionResult<IEnumerable<NMPremium>>> GetTable95()
         {
-            return await _context.Table95.Include(n => n.Usuario).ToListAsync();
+            try
+            {
+                var nmpremium = await nMPremiumService.GetAll();
+                return Ok(nmpremium);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
     }
 }

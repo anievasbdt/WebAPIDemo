@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Dominio.Entidades
 {
-    public class Way_pay
+    public class WayPay
     {
         [Key]
         [Column("NWAY_PAY")]

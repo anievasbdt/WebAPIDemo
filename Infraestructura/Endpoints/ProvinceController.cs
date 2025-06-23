@@ -1,27 +1,38 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Infraestructura.Persistencia;
+﻿using Aplicacion.Servicios;
+using Dominio.Contracts.Services;
+using Dominio.Contracts.Servicios;
 using Dominio.Entidades;
+using Infraestructura.Persistencia;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 namespace Infraestructura.Endpoints
 {
     [ApiController]
     [Route("[controller]")]
     public class ProvinceController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly IProvinceService provinceService;
 
-        public ProvinceController(AppDbContext context)
+        public ProvinceController(IProvinceService provinceService)
         {
-            _context = context;
+            this.provinceService = provinceService;
         }
 
         // GET /Province
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Province>>> GetProvince()
         {
-            return await _context.Province.Include(p => p.Usuario).ToListAsync();
+            try
+            {
+                var provinces = await provinceService.GetAll();
+                return Ok(provinces);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
     }
 }

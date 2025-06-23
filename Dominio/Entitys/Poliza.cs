@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Dominio.Entidades
 {
-    public class PolizaHistory
+    public class Poliza
     {
         [Key, Column("NBRANCH", Order = 0)]
         public int NBranch { get; set; }
@@ -15,17 +15,16 @@ namespace Dominio.Entidades
         [Key, Column("NPOLICY", Order = 2)]
         public int NPolicy { get; set; }
 
-        [Key, Column("NMOVMENT", Order = 3)]
-        public int NMovment { get; set; }
-
         [Required]
         [StringLength(14)]
         [Column("SCLIENT", TypeName = "char(14)")]
+        //
+        [ForeignKey(nameof(Client))]
         public string SClient { get; set; }
 
         [Required]
         [Column("DDATE_ORIGI", TypeName = "date")]
-        public DateTime DDateOrigi { get; set; }
+        public DateTime DDate_Origi { get; set; }
 
         [Required]
         [Column("DSTARTDATE", TypeName = "date")]
@@ -58,22 +57,19 @@ namespace Dominio.Entidades
 
         // Relaciones
 
-        [ForeignKey(nameof(SClient))]
+        //[ForeignKey("SClient")]
         public virtual Client Client { get; set; }
 
-        [ForeignKey(nameof(NWayPay))]
-        public virtual Way_pay WayPay { get; set; }
+        [ForeignKey("NWayPay")]
+        public virtual WayPay WayPay { get; set; }
 
-        [ForeignKey(nameof(NNullCode))]
-        public virtual NMPoliza NullReason { get; set; }
+        [ForeignKey("NNullCode")]
+        public virtual NMPoliza NullCode { get; set; }
 
-        [ForeignKey(nameof(NUserCode))]
+        [ForeignKey("NUserCode")]
         public virtual Usuario Usuario { get; set; }
 
-        [ForeignKey(nameof(NBranch))]
-        public virtual Branch Branch { get; set; }
-
-        [ForeignKey(nameof(NBranch) + "," + nameof(NProduct))]
+        // Clave compuesta con NBranch y NProduct (PRODUCTMASTER)
         public virtual ProductMaster Product { get; set; }
     }
 }

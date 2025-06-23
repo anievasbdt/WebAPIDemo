@@ -1,4 +1,7 @@
-﻿using Dominio.Entidades;
+﻿using Aplicacion.Servicios;
+using Dominio.Contracts.Services;
+using Dominio.Contracts.Servicios;
+using Dominio.Entidades;
 using Infraestructura.Persistencia;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,48 +17,55 @@ namespace Infraestructura.Endpoints
     [Route("[controller]")]
     public  class PolizaController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly IPolizaService polizaService;
 
-        public PolizaController(AppDbContext context)
+        public PolizaController(IPolizaService polizaService)
         {
-            _context = context;
+            this.polizaService = polizaService;
         }
 
         [HttpGet("{nBranch}/{nProduct}/{nPolicy}")]
         public async Task<ActionResult<Poliza>> GetPoliza(int nBranch, int nProduct, int nPolicy)
         {
-            var poliza = await _context.Poliza
-                .Include(p => p.Client) 
-                .Include(p => p.WayPay)
-                .Include(p => p.NullCode)
-                .Include(p => p.Usuario)
-                .Include(p => p.Product)
-                .FirstOrDefaultAsync(p => p.NBranch == nBranch && p.NProduct == nProduct && p.NPolicy == nPolicy);
-
-            if (poliza == null)
+            try
             {
-                return NotFound();
+                var poliza = await polizaService.GetPoliza(nBranch,nProduct,nPolicy);
+                if (poliza == null)
+                {
+                    return NotFound();
+                }
+                return Ok(poliza);
             }
-            return poliza;
+            catch (NotImplementedException)
+            {
+                return StatusCode(501, "Method not implemented");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
         [HttpGet("{sclient}")]
         public async Task<ActionResult<IEnumerable<Poliza>>> GetPolizasBySClient(string sclient)
         {
-            var polizas = await _context.Poliza
-                .Include(p => p.Client)
-                .Include(p => p.WayPay)
-                .Include(p => p.NullCode)
-                .Include(p => p.Usuario)
-                .Include(p => p.Product)
-                .Where(p => p.Client.SClient == sclient) // Filtra por SClient
-                .ToListAsync();
-
-            if (polizas == null || !polizas.Any())
+            try
             {
-                return NotFound();
+                var poliza = await polizaService.GetBySClient(sclient);
+                if (poliza == null)
+                {
+                    return NotFound();
+                }
+                return Ok(poliza);
             }
-            return polizas;
+            catch (NotImplementedException)
+            {
+                return StatusCode(501, "Method not implemented");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
     }
 }

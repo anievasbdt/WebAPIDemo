@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Infraestructura.Persistencia;
+﻿using Aplicacion.Servicios;
+using Dominio.Contracts.Servicios;
 using Dominio.Entidades;
+using Infraestructura.Persistencia;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Infraestructura.Endpoints
 {
@@ -11,21 +13,27 @@ namespace Infraestructura.Endpoints
     [Route("[controller]")]
     public class SexController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly ISexService sexService;
 
-        public SexController(AppDbContext context)
+        public SexController(ISexService sexService)
         {
-            _context = context;
+            this.sexService = sexService;
         }
 
         // GET /Table18
-        
+
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Sex>>> GetTable18()
         {
-            return await _context.Table18
-                .Include(s => s.Usuario) // Incluye la entidad relacionada
-                .ToListAsync();
+            try
+            {
+                var sexs = await sexService.GetAll();
+                return Ok(sexs);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
     }
 }
