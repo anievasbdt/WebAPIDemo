@@ -9,7 +9,7 @@ namespace Dominio.Contracts.Repositorys
 {
     public interface IPolizaHistoryRepository
     {
-        Task<PolizaHistory> GetPolizaHistory(int nBranch, int nProduct, int nPolicy);
+        Task<List<PolizaHistory>> GetPolizaHistory(int nBranch, int nProduct, int nPolicy);
 
     }
 }

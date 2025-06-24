@@ -21,23 +21,25 @@ namespace Infraestructura.Endpoints
         [HttpGet("{nrecowner}/{skeyaddress}/{sinfor}")]
         public async Task<ActionResult<Address>> GetAddress(int nrecowner, int skeyaddress, int sinfor)
         {
+            ActionResult<Address> result;
             try
             {
-                var address = await addressService.GetAddress(nrecowner,skeyaddress,sinfor);
+                Address address = await addressService.GetAddress(nrecowner,skeyaddress,sinfor);
                 if (address == null)
                 {
-                    return NotFound();
+                    result= NotFound();
                 }
-                return Ok(address);
+                result= Ok(address);
             }
             catch (NotImplementedException)
             {
-                return StatusCode(501, "Method not implemented");
+                result= StatusCode(501, "Method not implemented");
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                result= StatusCode(500, ex.Message);
             }
+            return result;
         }
     }
 }

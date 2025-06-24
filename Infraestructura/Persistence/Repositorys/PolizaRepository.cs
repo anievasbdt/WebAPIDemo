@@ -19,15 +19,15 @@ namespace Infraestructura.Persistence.Repositorys
             this.context = context;
         }
 
-        public Task<Poliza> GetBySClient(string codigo)
+        public Task<List<Poliza>> GetBySClient(string codigo)
         {
             return context.Poliza.
                 Include(p => p.Client).
                 Include(p => p.WayPay).
                 Include(p => p.NullCode).
                 Include(p => p.Usuario).
-                Include(p => p.Product).
-                FirstOrDefaultAsync(p => p.SClient == codigo);
+                Include(p => p.Product)
+                .Where(p => p.SClient == codigo).ToListAsync();
         }
 
         public Task<Poliza> GetPoliza(int nBranch, int nProduct, int nPolicy)

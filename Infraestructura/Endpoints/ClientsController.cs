@@ -24,38 +24,42 @@ namespace Infraestructura.Endpoints
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Client>>> GetClients()
         {
+            ActionResult<IEnumerable<Client>> resultado;
             try
             {
-                var clients = await clientService.GetAll();
-                return Ok(clients);
+                List<Client> clients = await clientService.GetAll();
+                resultado= Ok(clients);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                resultado= StatusCode(500, ex.Message);
             }
+            return resultado;
         }
 
         // GET /clients/{id}
         [HttpGet("{sclient}")]
         public async Task<ActionResult<Client>> GetClient(string sclient)
         {
+            ActionResult < Client > resultado;
             try
             {
-                var client = await clientService.GetClientBySClient(sclient);
+                Client client = await clientService.GetClientBySClient(sclient);
                 if (client == null)
                 {
-                    return NotFound();
+                    resultado= NotFound();
                 }
-                return Ok(client);
+                resultado= Ok(client);
             }
             catch (NotImplementedException)
             {
-                return StatusCode(501, "Method not implemented");
+                resultado= StatusCode(501, "Method not implemented");
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                resultado= StatusCode(500, ex.Message);
             }
+            return resultado;
         }
 
         //// POST /clients

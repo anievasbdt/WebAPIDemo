@@ -25,15 +25,17 @@ namespace Infraestructura.Endpoints
         [HttpGet("{nBranch}")]
         public async Task<ActionResult<IEnumerable<ProductMaster>>> GetProductMasterXBranch(int nBranch)
         {
+            ActionResult<IEnumerable<ProductMaster>> resultado;
             try
             {
-                var productsMaster = await productMasterService.GetProductMasterXBranch(nBranch);
-                return Ok(productsMaster);
+                List<ProductMaster> productsMaster = await productMasterService.GetProductMasterXBranch(nBranch);
+                resultado= Ok(productsMaster);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                resultado= StatusCode(500, ex.Message);
             }
+            return resultado;
         }
     }
 }

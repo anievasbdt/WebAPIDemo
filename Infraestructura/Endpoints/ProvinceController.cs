@@ -24,15 +24,17 @@ namespace Infraestructura.Endpoints
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Province>>> GetProvince()
         {
+            ActionResult<IEnumerable<Province>> resultado;
             try
             {
-                var provinces = await provinceService.GetAll();
-                return Ok(provinces);
+                List<Province> provinces = await provinceService.GetAll();
+                resultado= Ok(provinces);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                resultado= StatusCode(500, ex.Message);
             }
+            return resultado;
         }
     }
 }

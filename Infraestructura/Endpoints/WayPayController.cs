@@ -25,15 +25,17 @@ namespace Infraestructura.Endpoints
         [HttpGet]
         public async Task<ActionResult<IEnumerable<WayPay>>> GetTable5002()
         {
+            ActionResult<IEnumerable<WayPay>> resultado;
             try
             {
-                var wayPay = await wayPayService.GetAll();
-                return Ok(wayPay);
+                List<WayPay> wayPay = await wayPayService.GetAll();
+                resultado= Ok(wayPay);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                resultado= StatusCode(500, ex.Message);
             }
+            return resultado;
         }
     }
 }

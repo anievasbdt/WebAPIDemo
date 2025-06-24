@@ -26,51 +26,57 @@ namespace Infraestructura.Endpoints
         [HttpGet("Receipt/{nreceipt}")]
         public async Task<ActionResult<Premium>> GetPremium(int nreceipt)
         {
+            ActionResult<Premium> resultado;
             try
             {
-                var premium = await premiumService.GetPremium(nreceipt);
+                Premium premium = await premiumService.GetPremium(nreceipt);
                 if (premium == null)
                 {
-                    return NotFound();
+                    resultado= NotFound();
                 }
-                return Ok(premium);
+                resultado = Ok(premium);
             }
             catch (NotImplementedException)
             {
-                return StatusCode(501, "Method not implemented");
+                resultado = StatusCode(501, "Method not implemented");
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                resultado = StatusCode(500, ex.Message);
             }
+            return resultado;   
         }
 
         [HttpGet("{nBranch}/{nProduct}/{nPolicy}")]
         public async Task<ActionResult<IEnumerable<Premium>>> GetPremiumXPoliza(int nBranch, int nProduct, int nPolicy)
         {
+            ActionResult<IEnumerable<Premium>> resultado;
             try
             {
-                var premiums = await premiumService.GetPremiumXPoliza(nBranch,nProduct,nPolicy);
-                return Ok(premiums);
+                List<Premium> premiums = await premiumService.GetPremiumXPoliza(nBranch,nProduct,nPolicy);
+                resultado = Ok(premiums);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                resultado = StatusCode(500, ex.Message);
             }
+            return resultado;
         }
 
         [HttpGet("EnvioACobro/{nWayPay}")]
         public async Task<ActionResult<IEnumerable<Premium>>> GetPremiumXEnvioACobro(int nWayPay)
         {
+            ActionResult<IEnumerable<Premium>> resultado;
             try
             {
-                var premiums = await premiumService.GetPremiumXEnvioACobro(nWayPay);
-                return Ok(premiums);
+                List<Premium> premiums = await premiumService.GetPremiumXEnvioACobro(nWayPay);
+                resultado = Ok(premiums);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                resultado = StatusCode(500, ex.Message);
             }
+            return resultado;
         }
     }
 }

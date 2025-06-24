@@ -24,15 +24,17 @@ namespace Infraestructura.Endpoints
         [HttpGet]
         public async Task<ActionResult<IEnumerable<NMPoliza>>> GetTable13()
         {
+            ActionResult<IEnumerable<NMPoliza>> resultado;
             try
             {
-                var nmpoliza = await nmpolizaService.GetAll();
-                return Ok(nmpoliza);
+                List<NMPoliza> nmpoliza = await nmpolizaService.GetAll();
+                resultado= Ok(nmpoliza);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                resultado= StatusCode(500, ex.Message);
             }
+            return resultado;
         }
     }
 }

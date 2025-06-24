@@ -1,10 +1,12 @@
-﻿using Aplicacion.Servicios;
+﻿using Aplicacion.Services;
+using Aplicacion.Servicios;
 using Dominio.Contracts.Services;
 using Dominio.Contracts.Servicios;
 using Dominio.Entidades;
 using Infraestructura.Persistencia;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 
 namespace Infraestructura.Endpoints
 {
@@ -23,23 +25,25 @@ namespace Infraestructura.Endpoints
         [HttpGet("{nBranch}/{nProduct}/{nPolicy}")]
         public async Task<ActionResult<IEnumerable<PolizaHistory>>> GetPoliza_History(int nBranch, int nProduct, int nPolicy)
         {
+            ActionResult<IEnumerable<PolizaHistory>> resultado;
             try
             {
-                var polizaHistory = await polizaHistoryService.GetPolizaHistory(nBranch,nProduct,nPolicy);
+                List<PolizaHistory> polizaHistory = await polizaHistoryService.GetPolizaHistory(nBranch,nProduct,nPolicy);
                 if (polizaHistory == null)
                 {
-                    return NotFound();
+                    resultado= NotFound();
                 }
-                return Ok(polizaHistory);
+                resultado = Ok(polizaHistory);
             }
             catch (NotImplementedException)
             {
-                return StatusCode(501, "Method not implemented");
+                resultado = StatusCode(501, "Method not implemented");
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                resultado = StatusCode(500, ex.Message);
             }
+            return resultado;
         }
     }
 }

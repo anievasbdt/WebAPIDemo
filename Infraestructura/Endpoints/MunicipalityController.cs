@@ -23,15 +23,17 @@ namespace Infraestructura.Endpoints
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Municipality>>> GetMunicipality()
         {
+            ActionResult<IEnumerable<Municipality>> resultado;
             try
             {
-                var municipalitys = await municipalityService.GetAll();
-                return Ok(municipalitys);
+                List<Municipality> municipalitys = await municipalityService.GetAll();
+                resultado= Ok(municipalitys);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                resultado= StatusCode(500, ex.Message);
             }
+            return resultado;
         }
     }
 }

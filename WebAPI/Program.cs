@@ -4,7 +4,6 @@ using Dominio.Contracts.Repositorios;
 using Dominio.Contracts.Repositorys;
 using Dominio.Contracts.Services;
 using Dominio.Contracts.Servicios;
-using Infraestructura.Persistence;
 using Infraestructura.Persistence.Repositorys;
 using Infraestructura.Persistencia;
 using Infraestructura.Persistencia.Repositorios;

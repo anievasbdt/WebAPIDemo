@@ -25,15 +25,17 @@ namespace Infraestructura.Endpoints
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TabLocat>>> GetTab_Locat()
         {
+            ActionResult<IEnumerable<TabLocat>> resultado;
             try
             {
-                var tabLocats = await tabLocatService.GetAll();
-                return Ok(tabLocats);
+                List<TabLocat> tabLocats = await tabLocatService.GetAll();
+                resultado= Ok(tabLocats);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                resultado= StatusCode(500, ex.Message);
             }
+            return resultado;
         }
     }
 }

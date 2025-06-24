@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Dominio.Contracts.Servicios;
 using Dominio.Entidades;
-using Dominio.Contracts.Servicios;
+using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 
 namespace Infraestructura.Endpoints
 {
@@ -18,37 +19,41 @@ namespace Infraestructura.Endpoints
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Usuario>>> GetUsuarios()
         {
+            ActionResult<IEnumerable<Usuario>> resultado;
             try
             {
-                var usuarios = await usuarioService.GetAll();
-                return Ok(usuarios);
+                List<Usuario> usuarios = await usuarioService.GetAll();
+                resultado= Ok(usuarios);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                resultado= StatusCode(500, ex.Message);
             }
+            return resultado;
         }
 
         [HttpGet("{nusercode}")]
         public async Task<ActionResult<Usuario>> GetUsuario(int nusercode)
         {
+            ActionResult<Usuario> resultado;
             try
             {
-                var usuario = await usuarioService.GetUsuarioByUserCode(nusercode);
+                Usuario usuario = await usuarioService.GetUsuarioByUserCode(nusercode);
                 if (usuario == null)
                 {
-                    return NotFound();
+                    resultado= NotFound();
                 }
-                return Ok(usuario);
+                resultado= Ok(usuario);
             }
             catch (NotImplementedException)
             {
-                return StatusCode(501, "Method not implemented");
+                resultado= StatusCode(501, "Method not implemented");
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                resultado= StatusCode(500, ex.Message);
             }
+            return resultado;
         }
     }
 }

@@ -25,15 +25,17 @@ namespace Infraestructura.Endpoints
         [HttpGet]
         public async Task<ActionResult<IEnumerable<NMPremium>>> GetTable95()
         {
+            ActionResult<IEnumerable<NMPremium>> resultado;
             try
             {
-                var nmpremium = await nMPremiumService.GetAll();
-                return Ok(nmpremium);
+                List<NMPremium> nmpremium = await nMPremiumService.GetAll();
+                resultado= Ok(nmpremium);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                resultado= StatusCode(500, ex.Message);
             }
+            return resultado;
         }
     }
 }

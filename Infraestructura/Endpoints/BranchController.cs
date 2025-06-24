@@ -25,15 +25,17 @@ namespace Infraestructura.Endpoints
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Branch>>> GetTable10()
         {
+            ActionResult<IEnumerable<Branch>> result;
             try
             {
-                var branchs = await branchService.GetAll();
-                return Ok(branchs);
+                List<Branch> branchs = await branchService.GetAll();
+                result =  Ok(branchs);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                result= StatusCode(500, ex.Message);
             }
+            return result;
         }
     }
 }

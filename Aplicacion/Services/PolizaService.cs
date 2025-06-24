@@ -20,7 +20,7 @@ namespace Aplicacion.Services
             this.polizaRepository = polizaRepository;
         }
 
-        public Task<Poliza> GetBySClient(string codigo)
+        public Task<List<Poliza>> GetBySClient(string codigo)
         {
             return polizaRepository.GetBySClient(codigo);
         }

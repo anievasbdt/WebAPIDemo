@@ -19,7 +19,7 @@ namespace Aplicacion.Services
             this.polizaHistoryRepository = polizaHistoryRepository;
         }
 
-        public Task<PolizaHistory> GetPolizaHistory(int nBranch, int nProduct, int nPolicy)
+        public Task<List<PolizaHistory>> GetPolizaHistory(int nBranch, int nProduct, int nPolicy)
         {
             return polizaHistoryRepository.GetPolizaHistory(nBranch,nProduct,nPolicy);
         }

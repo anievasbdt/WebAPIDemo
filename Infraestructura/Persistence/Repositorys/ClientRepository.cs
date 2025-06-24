@@ -1,5 +1,6 @@
 ﻿using Dominio.Contracts.Repositorios;
 using Dominio.Entidades;
+using Infraestructura.Persistencia;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infraestructura.Persistencia.Repositorios
+namespace Infraestructura.Persistence.Repositorys
 {
     public class ClientRepository : IClientRepository
     {

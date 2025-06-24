@@ -25,15 +25,17 @@ namespace Infraestructura.Endpoints
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Sex>>> GetTable18()
         {
+            ActionResult<IEnumerable<Sex>> resultado;
             try
             {
-                var sexs = await sexService.GetAll();
-                return Ok(sexs);
+                List<Sex> sexs = await sexService.GetAll();
+                resultado= Ok(sexs);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                resultado= StatusCode(500, ex.Message);
             }
+            return resultado;
         }
     }
 }

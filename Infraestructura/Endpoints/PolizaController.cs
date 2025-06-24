@@ -27,45 +27,49 @@ namespace Infraestructura.Endpoints
         [HttpGet("{nBranch}/{nProduct}/{nPolicy}")]
         public async Task<ActionResult<Poliza>> GetPoliza(int nBranch, int nProduct, int nPolicy)
         {
+            ActionResult<Poliza> resultado;
             try
             {
-                var poliza = await polizaService.GetPoliza(nBranch,nProduct,nPolicy);
+                Poliza poliza = await polizaService.GetPoliza(nBranch,nProduct,nPolicy);
                 if (poliza == null)
                 {
-                    return NotFound();
+                    resultado= NotFound();
                 }
-                return Ok(poliza);
+                resultado = Ok(poliza);
             }
             catch (NotImplementedException)
             {
-                return StatusCode(501, "Method not implemented");
+                resultado = StatusCode(501, "Method not implemented");
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                resultado = StatusCode(500, ex.Message);
             }
+            return resultado;
         }
 
         [HttpGet("{sclient}")]
         public async Task<ActionResult<IEnumerable<Poliza>>> GetPolizasBySClient(string sclient)
         {
+            ActionResult<IEnumerable<Poliza>> resultado;
             try
             {
-                var poliza = await polizaService.GetBySClient(sclient);
+                List<Poliza> poliza = await polizaService.GetBySClient(sclient);
                 if (poliza == null)
                 {
-                    return NotFound();
+                    resultado = NotFound();
                 }
-                return Ok(poliza);
+                resultado = Ok(poliza);
             }
             catch (NotImplementedException)
             {
-                return StatusCode(501, "Method not implemented");
+                resultado = StatusCode(501, "Method not implemented");
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                resultado = StatusCode(500, ex.Message);
             }
+            return resultado;
         }
     }
 }
