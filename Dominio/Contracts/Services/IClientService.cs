@@ -1,4 +1,5 @@
-﻿using Dominio.Entidades;
+﻿using Dominio.DTOs.Request;
+using Dominio.Entidades;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,5 +12,6 @@ namespace Dominio.Contracts.Servicios
     {
         Task<List<Client>> GetAll();
         Task<Client> GetClientBySClient(string sclient);
+        bool CreateJuridicClient(NewClientJuridicoRequest request);
     }
 }

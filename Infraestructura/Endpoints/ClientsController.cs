@@ -1,5 +1,6 @@
 ﻿using Aplicacion.Servicios;
 using Dominio.Contracts.Servicios;
+using Dominio.DTOs.Request;
 using Dominio.Entidades;
 using Infraestructura.Persistencia;
 using Microsoft.AspNetCore.Mvc;
@@ -28,11 +29,11 @@ namespace Infraestructura.Endpoints
             try
             {
                 List<Client> clients = await clientService.GetAll();
-                resultado= Ok(clients);
+                resultado = Ok(clients);
             }
             catch (Exception ex)
             {
-                resultado= StatusCode(500, ex.Message);
+                resultado = StatusCode(500, ex.Message);
             }
             return resultado;
         }
@@ -41,27 +42,28 @@ namespace Infraestructura.Endpoints
         [HttpGet("{sclient}")]
         public async Task<ActionResult<Client>> GetClient(string sclient)
         {
-            ActionResult < Client > resultado;
+            ActionResult<Client> resultado;
             try
             {
                 Client client = await clientService.GetClientBySClient(sclient);
                 if (client == null)
                 {
-                    resultado= NotFound();
+                    resultado = NotFound();
                 }
-                resultado= Ok(client);
+                resultado = Ok(client);
             }
             catch (NotImplementedException)
             {
-                resultado= StatusCode(501, "Method not implemented");
+                resultado = StatusCode(501, "Method not implemented");
             }
             catch (Exception ex)
             {
-                resultado= StatusCode(500, ex.Message);
+                resultado = StatusCode(500, ex.Message);
             }
             return resultado;
         }
 
+        /*
         //// POST /clients
         //[HttpPost]
         //public async Task<ActionResult<Client>> PostClient(Client client)
@@ -107,5 +109,23 @@ namespace Infraestructura.Endpoints
         //{
         //    return _context.Clients.Any(e => e.SClient == id);
         //}
+        */
+
+        [HttpPost("new")]
+        public ActionResult<bool> CreateClient([FromBody] NewClientJuridicoRequest request)
+        {
+            ActionResult result;
+            try
+            {
+                clientService.CreateJuridicClient(request);
+
+                result = Ok(true); // Retorna true si la creación fue exitosa
+            }
+            catch (Exception ex)
+            {
+                result = StatusCode(500, ex.Message); // Manejo de errores
+            }
+            return result;
+        }
     }
 }

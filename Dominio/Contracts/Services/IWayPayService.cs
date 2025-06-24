@@ -1,4 +1,4 @@
-﻿using Dominio.Entidades;
+﻿using Dominio.DTOs.Response;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +9,8 @@ namespace Dominio.Contracts.Services
 {
     public interface IWayPayService
     {
-        Task<List<WayPay>> GetAll();
+        List<WayPayComboBoxResponse> GetAll();
+        List<WayPayTablaMantResponse> GetAllMant();
 
     }
 }

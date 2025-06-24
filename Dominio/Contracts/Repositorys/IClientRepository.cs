@@ -11,5 +11,6 @@ namespace Dominio.Contracts.Repositorios
     {
         Task<Client> GetBySClient(string codigo);
         Task<List<Client>> GetAll();
+        Task<bool> CreateJuridicClient(Client client);
     }
 }

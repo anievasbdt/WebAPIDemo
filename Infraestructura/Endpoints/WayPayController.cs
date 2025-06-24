@@ -1,7 +1,7 @@
 ﻿using Aplicacion.Servicios;
 using Dominio.Contracts.Services;
 using Dominio.Contracts.Servicios;
-using Dominio.Entidades;
+using Dominio.DTOs.Response;
 using Infraestructura.Persistencia;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -23,12 +23,12 @@ namespace Infraestructura.Endpoints
 
         // GET /Table5002
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<WayPay>>> GetTable5002()
+        public ActionResult<IEnumerable<WayPayComboBoxResponse>> GetTable5002()
         {
-            ActionResult<IEnumerable<WayPay>> resultado;
+            ActionResult<IEnumerable<WayPayComboBoxResponse>> resultado;
             try
             {
-                List<WayPay> wayPay = await wayPayService.GetAll();
+                List<WayPayComboBoxResponse> wayPay = wayPayService.GetAll();
                 resultado= Ok(wayPay);
             }
             catch (Exception ex)

@@ -1,6 +1,7 @@
 ﻿using Dominio.Contracts.Repositorios;
 using Dominio.Contracts.Repositorys;
 using Dominio.Contracts.Services;
+using Dominio.DTOs.Response;
 using Dominio.Entidades;
 using System;
 using System.Collections.Generic;
@@ -19,9 +20,30 @@ namespace Aplicacion.Services
             this.wayPayRepository = wayPayRepository;
         }
 
-        public Task<List<WayPay>> GetAll()
+        public List<WayPayComboBoxResponse> GetAll()
         {
-            return wayPayRepository.GetAll();
+            // Assuming WayPayComboBoxResponse is a DTO that maps to WayPay entity
+            List<WayPay> wayPays = wayPayRepository.GetAll().Result;
+            List<WayPayComboBoxResponse> response = wayPays.Select(wp => new WayPayComboBoxResponse
+            {
+                NWAY_PAY = wp.NWay_Pay,
+                SDESCRIPT = wp.SDescript == null ? string.Empty : wp.SDescript.Trim()
+            }).ToList();
+            return response;
+        }
+        public List<WayPayTablaMantResponse> GetAllMant()
+        {
+            // Assuming WayPayTablaMantResponse is a DTO that maps to WayPay entity
+            List<WayPay> wayPays = wayPayRepository.GetAll().Result;
+            List<WayPayTablaMantResponse> response = wayPays.Select(wp => new WayPayTablaMantResponse
+            {
+                NWay_Pay = wp.NWay_Pay,
+                SDescript = wp.SDescript == null ? string.Empty : wp.SDescript.Trim(),
+                DCompDate = wp.DCompDate,
+                NStatRegt = wp.NStatRegt,
+                SUserCode = wp.Usuario.SInitials == null ? string.Empty : wp.Usuario.SInitials.Trim()
+            }).ToList();
+            return response;
         }
     }
 }
